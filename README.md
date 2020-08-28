@@ -1,8 +1,6 @@
-=====
-Polls
-=====
+# django-cancango
 
-Polls is a Django app to handle access per model and per object permission.
+`django-cancango` is an authorization library for Django. It works on top of default Django permissions and allows to restrict the resources (models and objects) a given user can access.
 
 ## Quick start
 
