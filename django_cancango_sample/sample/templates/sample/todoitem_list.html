@@ -1,0 +1,18 @@
+{% if user.is_authenticated %}
+<p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>
+{% else %}
+<p>Welcome, new user. Please log in.</p>
+{% endif %}
+
+<h1>Todo List</h1>
+
+<ul>
+  {% for todo in object_list %}
+  <li>
+    <a href="/todo/{{todo.id}}/">{{ todo.name }}</a><br />
+    by {{todo.created_by.username }}
+  </li>
+  {% empty %}
+  <li>No todos yet.</li>
+  {% endfor %}
+</ul>

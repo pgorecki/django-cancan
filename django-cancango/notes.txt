@@ -1,0 +1,23 @@
+class PermissionsMixin(models.Model):
+
+
+ten mixin dolaczany jest do usera i ma metode has_perm, ktora wola f. _user_has_perm, 
+ktora sprawdza wszystkie auth backendy:
+
+
+https://github.com/django/django/blob/7af8f4127397279d19ef7c7899e93018274e2f9b/django/contrib/auth/models.py#L202
+def _user_has_perm(user, perm, obj):
+    """
+    A backend can raise `PermissionDenied` to short-circuit permission checking.
+    """
+    for backend in auth.get_backends():
+        if not hasattr(backend, 'has_perm'):
+            continue
+        try:
+            if backend.has_perm(user, perm, obj):
+                return True
+        except PermissionDenied:
+            return False
+    return False
+
+

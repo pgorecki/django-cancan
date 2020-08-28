@@ -1,0 +1,12 @@
+{% if user.is_authenticated %}
+<p>Welcome, {{ user.get_username }}. Thanks for logging in.</p>
+{% else %}
+<p>Welcome, new user. Please log in.</p>
+{% endif %}
+
+<h1>TODO item #{{object.id}}</h1>
+
+<p>{{object.name}}</p>
+<p>by {{object.created_by.username}}</p>
+
+<p><a href="/">Back</a></p>
