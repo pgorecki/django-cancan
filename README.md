@@ -14,3 +14,7 @@ Polls is a Django app to handle access per model and per object permission.
    ]
 
 2. .....
+
+## Testing
+
+Run `./manage.py test` to run all test for the `testapp`
