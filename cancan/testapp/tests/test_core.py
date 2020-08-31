@@ -3,6 +3,21 @@ from cancan.testapp.models import Article, User
 from cancan.ability import Ability, AbilityValidator
 
 
+class NoAbilitiesTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username="user1")
+
+    def test_no_abilities_can(self):
+        ability = Ability(user=self.user)
+        validator = AbilityValidator(ability)
+        self.assertFalse(validator.can('view', Article))
+
+    def test_no_abilities_queryset_for(self):
+        ability = Ability(user=self.user)
+        validator = AbilityValidator(ability)
+        self.assertEqual(validator.queryset_for('view', Article).count(), 0)
+
+
 class ModelAbilitiesTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="user1")
@@ -10,7 +25,7 @@ class ModelAbilitiesTestCase(TestCase):
     def test_no_abilities_when_initialized(self):
         ability = Ability(user=self.user)
         validator = AbilityValidator(ability)
-        self.assertFalse(ability.can('view', Article))
+        self.assertFalse(validator.can('view', Article))
 
     def test_happy_path(self):
         ability = Ability(user=self.user)
