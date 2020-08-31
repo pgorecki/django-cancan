@@ -6,6 +6,5 @@ install:
   - pip install pipenv
   - pipenv install --dev
 script:
-  - ./manage.py makemigrations
-  - ./manage.py migrate
+  - pipenv graph
   - ./manage.py test
