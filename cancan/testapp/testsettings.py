@@ -71,7 +71,3 @@ TEMPLATES = [
         },
     },
 ]
-
-
-print(DATABASES)
-print(INSTALLED_APPS)
