@@ -16,8 +16,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.messages',
-    'cancango',
-    'cancango.testapp',
+    'cancan',
+    'cancan.testapp',
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -33,7 +33,7 @@ MIDDLEWARE = (
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-ROOT_URLCONF = 'cancango.testapp.tests.urls'
+ROOT_URLCONF = 'cancan.testapp.tests.urls'
 SITE_ID = 1
 
 SECRET_KEY = ''.join([random.choice(string.ascii_letters) for x in range(40)])

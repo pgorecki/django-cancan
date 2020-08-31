@@ -2,7 +2,7 @@
 
 `django-cancan` is an authorization library for Django. It works on top of default Django permissions and allows to restrict the resources (models and objects) a given user can access.
 
-This library is inspiered by [cancancan](https://github.com/CanCanCommunity/cancancan) for Ruby on Rails.
+This library is inspired by [cancancan](https://github.com/CanCanCommunity/cancancan) for Ruby on Rails.
 
 ## Quick start
 

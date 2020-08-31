@@ -10,3 +10,7 @@ django = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+build = "python setup.py sdist bdist_wheel"
+publish = "twine upload --skip-existing dist/*"

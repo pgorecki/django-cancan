@@ -6,24 +6,24 @@ from django.utils.module_loading import import_string
 from .ability import Ability
 
 
-class CanCanGoMiddleware(MiddlewareMixin):
+class CanCanMiddleware(MiddlewareMixin):
     def process_request(self, request):
         assert hasattr(request, 'user'), (
-            "Cancango authentication middleware requires authenticationMiddleware middleware "
+            "Cancan authentication middleware requires authenticationMiddleware middleware "
             "to be installed. Edit your MIDDLEWARE setting to insert "
             "'django.contrib.auth.middleware.AuthenticationMiddleware' before."
-            "'cancango.middleware.CanCanGoMiddleware'"
+            "'cancan.middleware.CanCanMiddleware'"
         )
 
-        assert hasattr(settings, 'CANCANGO'), (
-            "CANCANGO section not found in settings"
+        assert hasattr(settings, 'CANCAN'), (
+            "CANCAN section not found in settings"
         )
-        assert 'ABILITIES' in settings.CANCANGO, (
-            "CANCANGO['ABILITIES'] is missing. It must point to a function"
+        assert 'ABILITIES' in settings.CANCAN, (
+            "CANCAN['ABILITIES'] is missing. It must point to a function"
         )
-        fn_name = settings.CANCANGO['ABILITIES']
+        fn_name = settings.CANCAN['ABILITIES']
 
-        declare_abilities = import_string(settings.CANCANGO['ABILITIES'])
+        declare_abilities = import_string(settings.CANCAN['ABILITIES'])
 
         assert callable(declare_abilities), (
             f"{fn_name}  must be callabe function fn(user: User, ability: Ability)"
