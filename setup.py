@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-cancan",
-    version="0.0.2",
+    version="0.1",
     author="Przemysław Górecki",
     author_email="przemyslaw.gorecki@gmail.com",
     description="Authorization library for Django",
@@ -21,7 +21,7 @@ setuptools.setup(
         'Framework :: Django :: 3.0',
         'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
