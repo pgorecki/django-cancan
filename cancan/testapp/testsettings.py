@@ -45,6 +45,8 @@ SECRET_KEY = ''.join([random.choice(string.ascii_letters) for x in range(40)])
 
 DATABASES = {'default': env.db(default="sqlite:///")}
 
+print(DATABASES)
+
 
 TEMPLATES = [
     {
