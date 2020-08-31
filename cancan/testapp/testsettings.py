@@ -47,7 +47,7 @@ SECRET_KEY = ''.join([random.choice(string.ascii_letters) for x in range(40)])
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': './db.sqlite3',
+        'NAME': ':memory:',
     }
 }
 
