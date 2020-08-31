@@ -28,8 +28,11 @@ MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'cancan.middleware.CanCanMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
+
+CANCAN = {'ABILITIES': 'cancan.testapp.abilities.get_abilities'}
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 

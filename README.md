@@ -61,9 +61,9 @@ to check for: model permissions, object permissions and model querysets.
 class ArticleListView(ListView):
     model = Article
 
-    def get_query_set():
+    def get_queryset():
         # this is how you can retrieve all objects a user can access
-        qs = self.request.ability.query_set_for('view', Article)
+        qs = self.request.ability.queryset_for('view', Article)
         return qs
 
 

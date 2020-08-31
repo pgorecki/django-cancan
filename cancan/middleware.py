@@ -3,7 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.module_loading import import_string
 
-from .ability import Ability
+from .ability import Ability, AbilityValidator
 
 
 class CanCanMiddleware(MiddlewareMixin):
@@ -32,8 +32,4 @@ class CanCanMiddleware(MiddlewareMixin):
         ability = Ability(request.user)
         declare_abilities(request.user, ability)
 
-        def can(action, model_or_instance):
-            print(action, model_or_instance)
-            return ability.is_able_to(action, model_or_instance)
-
-        request.user.can = can
+        request.ability = AbilityValidator(ability)

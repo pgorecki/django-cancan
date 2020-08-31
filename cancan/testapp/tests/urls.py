@@ -3,6 +3,7 @@ from django.urls import path
 from django.contrib import admin
 from django.contrib.auth.views import LoginView
 from django.views.generic import View
+from cancan.testapp.views import ArticleListView
 
 admin.autodiscover()
 
@@ -14,5 +15,5 @@ admin.autodiscover()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/login/', LoginView.as_view(template_name='blank.html')),
-    # path('permission_required/', TestClassRedirectView.as_view()),
+    path('articles/', ArticleListView.as_view())
 ]

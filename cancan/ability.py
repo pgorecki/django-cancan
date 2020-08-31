@@ -28,11 +28,16 @@ class Ability:
             'conditions': kwargs,
         })
 
-    def evaluate_model(self, action, model):
+
+class AbilityValidator:
+    def __init__(self, ability: Ability):
+        self.ability = ability
+
+    def validate_model(self, action, model):
         can_count = 0
         cannot_count = 0
         model_abilities = filter(
-            lambda c: c['model'] == model and c['action'] == action, self.abilities)
+            lambda c: c['model'] == model and c['action'] == action, self.ability.abilities)
         for c in model_abilities:
             if c['type'] == 'can':
                 can_count += 1
@@ -45,10 +50,10 @@ class Ability:
             return False
         return True
 
-    def evaluate_instance(self, action, instance):
+    def validate_instance(self, action, instance):
         model = instance._meta.model
         model_abilities = filter(
-            lambda c: c['model'] == model and c['action'] == action, self.abilities)
+            lambda c: c['model'] == model and c['action'] == action, self.ability.abilities)
 
         query_sets = []
         for c in model_abilities:
@@ -67,9 +72,15 @@ class Ability:
 
         return can_query_set.count() > 0
 
-    def build_query_set(self, action, model):
+    def can(self, action, model_or_instance) -> bool:
+        if inspect.isclass(model_or_instance):
+            return self.validate_model(action, model_or_instance)
+        else:
+            return self.validate_instance(action, model_or_instance)
+
+    def queryset_for(self, action, model):
         model_abilities = filter(
-            lambda c: c['model'] == model and c['action'] == action, self.abilities)
+            lambda c: c['model'] == model and c['action'] == action, self.ability.abilities)
 
         query_sets = []
         for c in model_abilities:
@@ -87,12 +98,3 @@ class Ability:
             can_query_set |= qs
 
         return can_query_set
-
-    def is_able_to(self, action, model_or_instance) -> bool:
-        if inspect.isclass(model_or_instance):
-            return self.evaluate_model(action, model_or_instance)
-        else:
-            return self.evaluate_instance(action, model_or_instance)
-
-    def to_query_set(self, action, model):
-        return self.build_query_set(action, model)
