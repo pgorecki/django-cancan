@@ -6,6 +6,7 @@ class Ability:
     def __init__(self, user):
         self.user = user
         self.abilities = []
+        self.aliases = {}
 
     def can(self, action, model, **kwargs):
         if type(model) is str:
@@ -27,6 +28,12 @@ class Ability:
             'model': model,
             'conditions': kwargs,
         })
+
+    def set_alias(self, alias, action):
+        self.aliases[alias] = action
+
+    def alias_to_action(self, alias):
+        return self.aliases.get(alias, alias)
 
 
 class AbilityValidator:
@@ -73,6 +80,7 @@ class AbilityValidator:
         return can_query_set.count() > 0
 
     def can(self, action, model_or_instance) -> bool:
+        action = self.ability.alias_to_action(action)
         if inspect.isclass(model_or_instance):
             return self.validate_model(action, model_or_instance)
         else:
