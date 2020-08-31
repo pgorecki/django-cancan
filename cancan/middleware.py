@@ -1,9 +1,16 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
+from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
 
 from .ability import Ability, AbilityValidator
+
+
+def get_validator(request, declare_abilities):
+    ability = Ability(request.user)
+    declare_abilities(request.user, ability)
+    return AbilityValidator(ability)
 
 
 class CanCanMiddleware(MiddlewareMixin):
@@ -29,7 +36,5 @@ class CanCanMiddleware(MiddlewareMixin):
             f"{fn_name}  must be callabe function fn(user: User, ability: Ability)"
         )
 
-        ability = Ability(request.user)
-        declare_abilities(request.user, ability)
-
-        request.ability = AbilityValidator(ability)
+        request.ability = SimpleLazyObject(
+            lambda: get_validator(request, declare_abilities))
