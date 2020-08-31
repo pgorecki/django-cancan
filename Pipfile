@@ -15,3 +15,7 @@ twine = "*"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+build = "python setup.py sdist bdist_wheel"
+publish = "twine upload --skip-existing dist/*"
