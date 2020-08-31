@@ -49,21 +49,50 @@ class Ability:
         model = instance._meta.model
         model_abilities = filter(
             lambda c: c['model'] == model and c['action'] == action, self.abilities)
-        can_query_set = model.objects.all().filter(pk=instance.id)
+
+        query_sets = []
         for c in model_abilities:
             if c['type'] == 'can':
-                can_query_set = can_query_set.filter(**c.get('conditions', {}))
+                qs = model.objects.all().filter(pk=instance.id, **c.get('conditions', {}))
 
             if c['type'] == 'cannot':
-                can_query_set = can_query_set.exclude(
-                    **c.get('conditions', {}))
+                raise NotImplementedError(
+                    'cannot-type rules are not yet implemented')
 
-        # print(('+', can_query_set.all()))
+            query_sets.append(qs)
+
+        can_query_set = query_sets.pop()
+        for qs in query_sets:
+            can_query_set |= qs
 
         return can_query_set.count() > 0
+
+    def build_query_set(self, action, model):
+        model_abilities = filter(
+            lambda c: c['model'] == model and c['action'] == action, self.abilities)
+
+        query_sets = []
+        for c in model_abilities:
+            if c['type'] == 'can' and 'conditions' in c:
+                qs = model.objects.all().filter(**c.get('conditions', {}))
+
+            if c['type'] == 'cannot':
+                raise NotImplementedError(
+                    'cannot-type rules are not yet implemented')
+
+            query_sets.append(qs)
+
+        can_query_set = query_sets.pop()
+        for qs in query_sets:
+            can_query_set |= qs
+
+        return can_query_set
 
     def is_able_to(self, action, model_or_instance) -> bool:
         if inspect.isclass(model_or_instance):
             return self.evaluate_model(action, model_or_instance)
         else:
             return self.evaluate_instance(action, model_or_instance)
+
+    def to_query_set(self, action, model):
+        return self.build_query_set(action, model)
