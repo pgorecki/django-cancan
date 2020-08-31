@@ -34,7 +34,7 @@ MIDDLEWARE = (
 
 CANCAN = {'ABILITIES': 'cancan.testapp.abilities.get_abilities'}
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+# TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 ROOT_URLCONF = 'cancan.testapp.tests.urls'
 SITE_ID = 1
@@ -43,8 +43,13 @@ SECRET_KEY = ''.join([random.choice(string.ascii_letters) for x in range(40)])
 
 # Database specific
 
-DATABASES = {'default': env.db(default="sqlite:///")}
-
+# DATABASES = {'default': env.db(default="sqlite:///")}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': './test.db',
+    }
+}
 
 TEMPLATES = [
     {
