@@ -87,6 +87,8 @@ class AbilityValidator:
             return self.validate_instance(action, model_or_instance)
 
     def queryset_for(self, action, model):
+        action = self.ability.alias_to_action(action)
+
         model_abilities = filter(
             lambda c: c['model'] == model and c['action'] == action, self.ability.abilities)
 

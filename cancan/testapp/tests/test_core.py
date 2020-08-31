@@ -94,6 +94,7 @@ class ObjectAbilitiesMultipleCanTestCase(TestCase):
 class AliasesTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='user1')
+        article1 = Article.objects.create(name='test')
         ability = Ability(user=self.user)
         ability.can('view', Article)
         ability.set_alias('list', 'view')
@@ -101,3 +102,5 @@ class AliasesTestCase(TestCase):
 
     def test_can_view_published(self):
         self.assertTrue(self.validator.can('list', Article))
+        self.assertEqual(self.validator.queryset_for(
+            'list', Article).count(), 1)
