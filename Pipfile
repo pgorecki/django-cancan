@@ -9,6 +9,9 @@ django-environ = "*"
 
 [dev-packages]
 "autopep8" = "*"
+setuptools = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"

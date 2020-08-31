@@ -11,7 +11,7 @@ class TodoIndexView(ListView):
     model = TodoItem
 
     def get_query_set():
-        qs = super().get_query_set()
+        qs = self.request.user.accessible_query_set(TodoItem)
         return qs
 
 

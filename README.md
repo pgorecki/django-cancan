@@ -1,17 +1,17 @@
-# django-cancango
+# django-cancan
 
-`django-cancango` is an authorization library for Django. It works on top of default Django permissions and allows to restrict the resources (models and objects) a given user can access.
+`django-cancan` is an authorization library for Django. It works on top of default Django permissions and allows to restrict the resources (models and objects) a given user can access.
 
-This library is inspiered by `cancancan` for Ruby on Rails.
+This library is inspiered by [cancancan](https://github.com/CanCanCommunity/cancancan) for Ruby on Rails.
 
 ## Quick start
 
-1. Add `cancango` to your `INSTALLED_APPS` setting like this:
+1. Add `cancan` to your `INSTALLED_APPS` setting like this:
 
 ```python
 INSTALLED_APPS = [
     ...,
-    'cancango',
+    'cancan',
 ]
 ```
 
@@ -32,37 +32,48 @@ def declare_abilities(user, ability):
         return ability.can('change', Article)
 ```
 
-3. Configure `cancango` by adding `CANCANGO` section in `settings.py`:
+3. Configure `cancan` by adding `CANCAN` section in `settings.py`:
 
 ```python
-CANCANGO = {
+CANCAN = {
     'ABILITIES': 'myapp.abilities.declare_abilities'
 }
 ```
 
-Next, add `cancango` middleware after `AuthenticationMiddleware`:
+Next, add `cancan` middleware after `AuthenticationMiddleware`:
 
 ```python
 MIDDLEWARE = [
     ...
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'cancango.middleware.CanCanGoMiddleware',
+    'cancan.middleware.CanCanMiddleware',
     ...
 ]
 ```
 
-Adding the middleware adds `request.user.can(...)` function that you can use
-to check for model or object permissions.
+Adding the middleware adds `request.ability` instance which you can use
+to check for: model permissions, object permissions and model querysets.
 
-4. Check abilities in a view:
+4. Check abilities in views:
 
 ```python
+
+class ArticleListView(ListView):
+    model = Article
+
+    def get_query_set():
+        # this is how you can retrieve all objects a user can access
+        qs = self.request.ability.query_set_for('view', Article)
+        return qs
+
+
 class ArticleDetailView(PermissionRequiredMixin, DetailView):
-    queryset = TodoItem.objects.all()
+    queryset = Article.objects.all()
 
     def has_permission(self):
         article = self.get_object()
-        return self.request.user.can('view', article)
+        # this is how you can check if user can access an object
+        return self.request.ability.can('view', article)
 ```
 
 ## Testing

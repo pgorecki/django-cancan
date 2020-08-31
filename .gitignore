@@ -1,3 +1,6 @@
 .vscode/
 .pytest_cache/
 .pyc
+build/
+dist/
+django_cancan.egg-info/

@@ -20,10 +20,8 @@ abspath = lambda *p: os.path.abspath(os.path.join(*p))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent
-CANCANGO_MODULE_PATH = abspath(BASE_DIR, '..')
-print(BASE_DIR)
-print(CANCANGO_MODULE_PATH)
-sys.path.insert(0, CANCANGO_MODULE_PATH)
+CANCAN_MODULE_PATH = abspath(BASE_DIR, '..')
+sys.path.insert(0, CANCAN_MODULE_PATH)
 
 
 # Quick-start development settings - unsuitable for production
@@ -46,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cancango',
+    'cancan',
     'sample'
 ]
 
@@ -58,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'cancango.middleware.CanCanGoMiddleware',
+    'cancan.middleware.CanCanMiddleware',
 ]
 
 ROOT_URLCONF = 'urls'
@@ -126,7 +124,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-CANCANGO = {
+CANCAN = {
     'ABILITIES': 'abilities.declare_abilities'
 }
 
