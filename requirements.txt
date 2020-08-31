@@ -1,0 +1,6 @@
+-i https://pypi.org/simple
+asgiref==3.2.10
+django-environ==0.4.5
+django==3.1
+pytz==2020.1
+sqlparse==0.3.1
