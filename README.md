@@ -6,6 +6,14 @@
 
 This library is inspired by [cancancan](https://github.com/CanCanCommunity/cancancan) for Ruby on Rails.
 
+## How to install
+
+Using `pip`:
+
+```
+pip install django-cancan
+```
+
 ## Quick start
 
 1. Add `cancan` to your `INSTALLED_APPS` setting like this:
