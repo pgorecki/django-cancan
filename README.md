@@ -1,5 +1,9 @@
 # django-cancan
 
+<p align="center">
+    <img src="django-cancan.svg" alt="Logo" height="224" />
+</p>
+
 [![Build Status](https://travis-ci.com/pgorecki/django-cancan.svg?branch=master)](https://travis-ci.com/pgorecki/django-cancan) 
 [![PyPI version](https://badge.fury.io/py/django-cancan.svg)](https://badge.fury.io/py/django-cancan)
 
@@ -87,6 +91,5 @@ class ArticleDetailView(PermissionRequiredMixin, DetailView):
         return self.request.ability.can('view', article)
 ```
 
-## Testing
 
-Run `./manage.py test` to run all test for the `testapp`
+<div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
