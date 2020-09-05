@@ -1,10 +1,36 @@
 # django-cancan
 
+<p align="center">
+    <img src="django-cancan.svg" alt="Logo" height="224" />
+</p>
+
 [![Build Status](https://travis-ci.com/pgorecki/django-cancan.svg?branch=master)](https://travis-ci.com/pgorecki/django-cancan)
+[![PyPI version](https://badge.fury.io/py/django-cancan.svg)](https://badge.fury.io/py/django-cancan)
 
 `django-cancan` is an authorization library for Django. It works on top of default Django permissions and allows to restrict the resources (models and objects) a given user can access.
 
 This library is inspired by [cancancan](https://github.com/CanCanCommunity/cancancan) for Ruby on Rails.
+
+## Key features
+
+- All of your permissions logic is kept in one place. User permissions are defined in a single function and not scattered across views,
+  querysets, etc.
+
+- Same permissions logic is used to check permissions on a single model instance and to generate queryset containing all instances that the user can access
+
+- Easy unit testing
+
+- Integration with built-in Django default permissions system and Django admin (coming soon)
+
+- Intergration with Django Rest Framework (coming soon)
+
+## How to install
+
+Using `pip`:
+
+```
+pip install django-cancan
+```
 
 ## Quick start
 
@@ -78,6 +104,12 @@ class ArticleDetailView(PermissionRequiredMixin, DetailView):
         return self.request.ability.can('view', article)
 ```
 
-## Testing
+## Sponsors
 
-Run `./manage.py test` to run all test for the `testapp`
+<a href="https://ermlab.com/" target="_blank">
+  <img src="https://ermlab.com/wp-content/uploads/2019/08/ermlab_logo_plain_h80.png" alt="Ermlab" width="200"/>
+</a>
+
+<hr>
+
+<div>Logo made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
