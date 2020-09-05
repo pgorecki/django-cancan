@@ -7,10 +7,16 @@ class NoAbilitiesTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="user1")
 
-    def test_no_abilities_can(self):
+    def test_no_abilities_can_model(self):
         ability = Ability(user=self.user)
         validator = AbilityValidator(ability)
         self.assertFalse(validator.can('view', Article))
+
+    def test_no_abilities_can_object(self):
+        ability = Ability(user=self.user)
+        validator = AbilityValidator(ability)
+        article = Article.objects.create(name="foobar")
+        self.assertFalse(validator.can('view', article))
 
     def test_no_abilities_queryset_for(self):
         ability = Ability(user=self.user)

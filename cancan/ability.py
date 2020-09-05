@@ -73,6 +73,9 @@ class AbilityValidator:
 
             query_sets.append(qs)
 
+        if len(query_sets) == 0:
+            return False
+
         can_query_set = query_sets.pop()
         for qs in query_sets:
             can_query_set |= qs
