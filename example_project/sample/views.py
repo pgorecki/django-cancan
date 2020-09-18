@@ -20,4 +20,4 @@ class TodoDetailView(PermissionRequiredMixin, DetailView):
 
     def has_permission(self):
         obj = self.get_object()
-        return self.request.user.can('view', obj)
+        return self.request.user.can("view", obj)

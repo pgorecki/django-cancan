@@ -4,10 +4,12 @@ from cancan.ability import Ability, AbilityValidator
 
 
 def get_abilities(user, ability):
-    ability.can('view', Article, is_published=True)
+    ability.can("view", Article, is_published=True)
 
 
-@override_settings(CANCAN={'ABILITIES': 'cancan.testapp.tests.test_middleware.get_abilities'})
+@override_settings(
+    CANCAN={"ABILITIES": "cancan.testapp.tests.test_middleware.get_abilities"}
+)
 class MiddlewareTestCase(TestCase):
     def setUp(self):
         self.article1 = Article.objects.create(is_published=True)
@@ -15,8 +17,8 @@ class MiddlewareTestCase(TestCase):
 
     def test_list_view(self):
         c = Client()
-        response = c.get('/articles/')
-        ids = response.content.decode().split(' ')
+        response = c.get("/articles/")
+        ids = response.content.decode().split(" ")
         self.assertEqual(response.status_code, 200)
         self.assertIn(str(self.article1.id), ids)
         self.assertNotIn(str(self.article2.id), ids)

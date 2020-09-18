@@ -8,7 +8,7 @@ class ArticleListView(ListView):
 
     def get_queryset(self):
         # this is how you can retrieve all objects a user can access
-        qs = self.request.ability.queryset_for('view', Article)
+        qs = self.request.ability.queryset_for("view", Article)
         return qs
 
 
@@ -18,4 +18,4 @@ class ArticleDetailView(PermissionRequiredMixin, DetailView):
     def has_permission(self):
         article = self.get_object()
         # this is how you can check if user can access an object
-        return self.request.ability.can('view', article)
+        return self.request.ability.can("view", article)

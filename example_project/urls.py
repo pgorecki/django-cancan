@@ -18,8 +18,8 @@ from django.urls import include, path
 from sample.views import TodoIndexView, TodoDetailView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', TodoIndexView.as_view()),
-    path('todo/<int:pk>/', TodoDetailView.as_view()),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("", TodoIndexView.as_view()),
+    path("todo/<int:pk>/", TodoDetailView.as_view()),
 ]
