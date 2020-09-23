@@ -1,17 +1,14 @@
-from sample.models import TodoItem
+from core.models import Project, Membership, Issue
 
 
-def declare_abilities(user, ability):
-    if not user.is_authenticated:
+def declare_abilities(user, rules):
+    if not user.is_authenticated or not user.is_active:
+        # anonymous/inactive users can do nothing
         return False
 
-    # TODO:
-    # multiple can will be OR'ed
-    # after can, you can put cannot which will be overriden by following can
+    # logged in can view own content
+    rules.allow("add", Project)
+    rules.allow("view", Project, created_by=user)
 
-    # Logged in user can view his own todos
-    ability.can("view", TodoItem, created_by=user.id)
-
-    if user.has_perm("sample.view_todo"):
-        # OR condition - allow to view all todo items
-        ability.can("view", TodoItem)
+    if user.is_superuser:
+        rules.allow("view", Project)

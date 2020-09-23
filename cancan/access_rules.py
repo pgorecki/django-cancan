@@ -1,3 +1,6 @@
+from django.apps import apps
+
+
 class AccessRules:
     def __init__(self, user):
         self.user = user

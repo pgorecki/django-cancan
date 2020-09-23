@@ -1,0 +1,16 @@
+{% extends 'bulma/base.html' %}
+{% load bulma_tags %}
+{% load cancan_tags %}
+
+{% block title %}Project Form{% endblock %}
+
+{% block content %}
+<form action="/projects/new/" method="post">
+   {% csrf_token %}
+   {{ form|bulma }}
+   <div class="field">
+     <button type="submit" class="button is-primary">Submit</button>
+   </div>
+   <input type="hidden" name="next" value="/projects"/>
+</form>
+{% endblock content %}
