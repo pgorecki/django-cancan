@@ -3,14 +3,14 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
-
-from .ability import Ability, AbilityValidator
+from .access_rules import AccessRules
+from .ability import Ability
 
 
 def get_validator(request, declare_abilities):
-    ability = Ability(request.user)
-    declare_abilities(request.user, ability)
-    return AbilityValidator(ability)
+    access_rules = AccessRules(request.user)
+    declare_abilities(request.user, access_rules)
+    return Ability(access_rules)
 
 
 class CanCanMiddleware(MiddlewareMixin):

@@ -1,10 +1,10 @@
 from django.test import TestCase, Client, override_settings
 from cancan.testapp.models import Article, User
-from cancan.ability import Ability, AbilityValidator
+from cancan.ability import Ability, AccessRules
 
 
-def get_abilities(user, ability):
-    ability.can("view", Article, is_published=True)
+def get_abilities(user, rules):
+    rules.allow("view", Article, is_published=True)
 
 
 @override_settings(
