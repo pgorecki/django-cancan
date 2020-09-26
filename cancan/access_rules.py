@@ -1,6 +1,18 @@
 from django.apps import apps
 
 
+def normalize_subject(subject):
+    if isinstance(subject, str):
+        try:
+            app_label, model_name = subject.split('.')
+            return apps.get_model(app_label, model_name)
+        except Excepion as e:
+            pass
+    return subject
+
+
+
+
 class AccessRules:
     def __init__(self, user):
         self.user = user
@@ -8,12 +20,10 @@ class AccessRules:
         self.action_aliases = {}
 
     def allow(self, action, subject, **kwargs):
-        if type(subject) is str:
-            model = apps.get_model(subject)
         rule = {
             "type": "can",
             "action": action,
-            "model": subject,
+            "model": normalize_subject(subject),
             "conditions": kwargs,
         }
         self.rules.append(rule)

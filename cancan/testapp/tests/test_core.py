@@ -108,3 +108,16 @@ class AliasesTestCase(TestCase):
     def test_can_view_published(self):
         self.assertTrue(self.ability.can("list", Article))
         self.assertEqual(self.ability.queryset_for("list", Article).count(), 1)
+
+
+class MiscTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username="user1")
+        article1 = Article.objects.create(name="test")
+        access_rules = AccessRules(user=self.user)
+        access_rules.allow("view", Article)
+        access_rules.alias_action("view", "list")
+        self.ability = Ability(access_rules)
+
+    def test_in_operator(self):
+        self.assertTrue(("view", Article) in self.ability)

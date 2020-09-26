@@ -22,8 +22,12 @@
   </li>
   {% endfor %}
 
-  {% can "view" "core.Project" as is_allowed %}
-  {% if is_allowed %}
+  {% can "add" "core.Project" as is_allowed %}
+  {% for x in abilities|can:"view"|subject:"core.Project" %}
+  x
+  {% endfor %}
+
+  {% if abilities|can:"view"|subject:"core.Project" %}
   <li style="width: 25%; padding: 10px">
       <a href="/projects/new/" class="button is-primary">Create new project</a>
   </li>

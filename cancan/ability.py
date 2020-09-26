@@ -54,12 +54,12 @@ class Ability:
 
         return can_query_set.count() > 0
 
-    def can(self, action, model_or_instance) -> bool:
+    def can(self, action, subject) -> bool:
         action = self.access_rules.alias_to_action(action)
-        if inspect.isclass(model_or_instance):
-            return self.validate_model(action, model_or_instance)
+        if inspect.isclass(subject):
+            return self.validate_model(action, subject)
         else:
-            return self.validate_instance(action, model_or_instance)
+            return self.validate_instance(action, subject)
 
     def queryset_for(self, action, model):
         action = self.access_rules.alias_to_action(action)
@@ -87,3 +87,7 @@ class Ability:
             can_query_set |= qs
 
         return can_query_set
+
+    def __contains__(self, item):
+        action, subject = item
+        return self.can(action, subject)
