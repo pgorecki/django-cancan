@@ -1,27 +1,53 @@
 from django import template
 from django.apps import apps
 from django.utils.safestring import SafeString
-from cancan.access_rules import normalize_subject
+from cancan.ability import Ability
 
 register = template.Library()
 
 
-@register.filter
-def can(abilities, action):
-    matching_rules = list(filter(lambda rule: rule['action'] == action, abilities))
-    return matching_rules
+class AbilityCheck:
+    """
+    This function is used internally to check for ability within a template i. e.
+    {% if ability|can:"view"|subject:project %}
+        <a href="#" class="card-footer-item">View</a>
+    {% endif %}
+    """
+
+    def __init__(self, ability):
+        self.ability = ability
+        self.action = None
+        self.subject = None
+
+    def __repr__(self):
+        return f"{self.ability}(action={self.action},subject={self.subject})"
+
+    def __bool__(self):
+        return self.ability.can(self.action, self.subject)
+
 
 @register.filter
-def subject(abilities, subject):
-    s = normalize_subject(str(subject))
-    matching_rules = list(filter(lambda rule: rule['model'] == s, abilities))
-    return matching_rules
+def can(ability, action):
+    if not isinstance(ability, AbilityCheck):
+        assert isinstance(
+            ability, Ability
+        ), f"can filter must be applied to Ability instance (you provided {type(ability)})"
+        ability = AbilityCheck(ability)
+    ability.action = action
+    return ability
+
+
+@register.filter
+def subject(ability, subject):
+    if not isinstance(ability, AbilityCheck):
+        assert isinstance(
+            ability, Ability
+        ), f"subject filter must be applied to Ability instance (you provided {type(ability)})"
+        ability = AbilityCheck(ability)
+    ability.subject = subject
+    return ability
+
 
 @register.simple_tag(takes_context=True)
 def can(context, action, subject):
-    is_allowed = False
-    if type(subject) is SafeString:
-        model = apps.get_model(subject)
-        print(model)
-        is_allowed = context["request"].ability.can(action, model)
-    return f"can {action} {subject}? {is_allowed}"
+    return context["request"].ability.can(action, subject)

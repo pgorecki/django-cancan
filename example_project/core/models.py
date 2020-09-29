@@ -9,7 +9,7 @@ class Project(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
 
     def get_absolute_url(self):
-        return reverse("project-detail", kwargs={"pk": self.pk})
+        return reverse("project_detail", kwargs={"pk": self.pk})
 
 
 class Membership(models.Model):

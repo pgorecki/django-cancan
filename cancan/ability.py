@@ -1,6 +1,6 @@
 import inspect
 from django.apps import apps
-from .access_rules import AccessRules
+from .access_rules import AccessRules, normalize_subject
 
 
 class Ability:
@@ -11,7 +11,7 @@ class Ability:
         can_count = 0
         cannot_count = 0
         model_abilities = filter(
-            lambda c: c["model"] == model and c["action"] == action,
+            lambda c: c["subject"] == model and c["action"] == action,
             self.access_rules.rules,
         )
         for c in model_abilities:
@@ -29,7 +29,7 @@ class Ability:
     def validate_instance(self, action, instance):
         model = instance._meta.model
         model_abilities = filter(
-            lambda c: c["model"] == model and c["action"] == action,
+            lambda c: c["subject"] == model and c["action"] == action,
             self.access_rules.rules,
         )
 
@@ -55,6 +55,7 @@ class Ability:
         return can_query_set.count() > 0
 
     def can(self, action, subject) -> bool:
+        subject = normalize_subject(subject)
         action = self.access_rules.alias_to_action(action)
         if inspect.isclass(subject):
             return self.validate_model(action, subject)
@@ -62,10 +63,11 @@ class Ability:
             return self.validate_instance(action, subject)
 
     def queryset_for(self, action, model):
+        model = normalize_subject(model)
         action = self.access_rules.alias_to_action(action)
 
         model_abilities = filter(
-            lambda c: c["model"] == model and c["action"] == action,
+            lambda c: c["subject"] == model and c["action"] == action,
             self.access_rules.rules,
         )
 

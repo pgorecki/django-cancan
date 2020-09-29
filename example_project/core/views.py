@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import ListView, DetailView, TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.middleware import AuthenticationMiddleware
 from .models import Project
@@ -29,7 +29,7 @@ class ProjectDetailView(DetailView):
         return self.request.ability.queryset_for("view", self.model)
 
     def test_func(self):
-        return self.request.ability.can("view", self.model)
+        return self.request.ability.can("view", self.get_object())
 
 
 class ProjectCreateView(UserPassesTestMixin, CreateView):
@@ -44,4 +44,19 @@ class ProjectCreateView(UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("project-detail", args=(self.object.id,))
+        return reverse("project_detail", args=(self.object.id,))
+
+
+class ProjectUpdateView(UserPassesTestMixin, UpdateView):
+    model = Project
+    fields = ["name", "description"]
+
+    def test_func(self):
+        return self.request.ability.can("change", self.get_object())
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("project_detail", args=(self.self.get_object().id,))

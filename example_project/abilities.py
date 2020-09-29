@@ -9,6 +9,10 @@ def declare_abilities(user, rules):
     # logged in can view own content
     rules.allow("add", Project)
     rules.allow("view", Project, created_by=user)
+    rules.allow("change", Project, created_by=user)
+    rules.allow("delete", Project, created_by=user)
 
     if user.is_superuser:
         rules.allow("view", Project)
+        rules.allow("change", Project)
+        rules.allow("delete", Project)

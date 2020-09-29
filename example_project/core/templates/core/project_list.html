@@ -4,32 +4,36 @@
 {% block title %}Your projects{% endblock %} 
 
 {% block content %}
---->{{ abilities }}<---
 <h1>Your projects</h1>
 <ul style="display: flex; flex-wrap: wrap">
   {% for project in object_list %}
   <li style="width: 25%; padding: 10px">
     <div class="card">
       <header class="card-header">
-        <a href="/projects/{{project.id}}" class="card-header-title">{{project.name}}</a>
+        <a href="{% url 'project_detail' pk=project.id %}" class="card-header-title">{{project.name}}</a>
       </header>    
       <div class="card-content">
         <div class="content">
           {{project.description}}
         </div>
       </div>
+      <footer class="card-footer">
+        {% if ability|can:"view"|subject:project %}
+          <a href="{% url 'project_detail' pk=project.id %}" class="card-footer-item">View</a>
+        {% endif %}
+        {% if ability|can:"change"|subject:project %}
+          <a href="{% url 'project_edit' pk=project.id %}" class="card-footer-item">Edit</a>
+        {% endif %}
+      </footer>
     </div>
   </li>
   {% endfor %}
 
-  {% can "add" "core.Project" as is_allowed %}
-  {% for x in abilities|can:"view"|subject:"core.Project" %}
-  x
-  {% endfor %}
+  {% can "add" "core.Project" as can_add_project %}
 
-  {% if abilities|can:"view"|subject:"core.Project" %}
+  {% if can_add_project %}
   <li style="width: 25%; padding: 10px">
-      <a href="/projects/new/" class="button is-primary">Create new project</a>
+      <a href="{% url 'project_new' %}" class="button is-primary">Create new project</a>
   </li>
   {% endif %}
 </ul>

@@ -4,13 +4,11 @@ from django.apps import apps
 def normalize_subject(subject):
     if isinstance(subject, str):
         try:
-            app_label, model_name = subject.split('.')
+            app_label, model_name = subject.split(".")
             return apps.get_model(app_label, model_name)
-        except Excepion as e:
+        except Exception as e:
             pass
     return subject
-
-
 
 
 class AccessRules:
@@ -23,7 +21,7 @@ class AccessRules:
         rule = {
             "type": "can",
             "action": action,
-            "model": normalize_subject(subject),
+            "subject": normalize_subject(subject),
             "conditions": kwargs,
         }
         self.rules.append(rule)
