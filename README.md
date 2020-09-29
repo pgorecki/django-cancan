@@ -43,32 +43,43 @@ INSTALLED_APPS = [
 ]
 ```
 
-2. Create a function that define user abilites. For example, in `abilities.py`:
+2. Create a function that define the access rules for a given user. For example, create `abilities.py` in `myapp` module:
 
 ```python
-def declare_abilities(user, ability):
-    if not user.is_authenticated:
-        # Allow anonymous users to view published articles
-        return ability.can('view', Article, published=True)
+def define_access_rules(user, rules):
+    # Anybody can view published articles
+    rules.allow('view', Article, published=True)
 
-    if user.has_perm('article.view_own_article'):
-        # Allow logged in user to change his articles
-        return ability.can('change', Article, author=user)
+    if not user.is_authenticated:
+        return 
+
+    # Allow logged in user to view his own articles, regardless of the `published` status
+    rules.allow('view', Article, author=user)
+
+    if user.has_perm('article.view_unpublished'):
+        # You can also check for custom model permissions (i.e. view_unpublished)
+        rules.allow('view', Article, published=False)
+    
 
     if user.is_superuser:
-        # Allow superuser change all articles
-        return ability.can('change', Article)
+        # Superuser gets unlimited access to all articles
+        rules.allow('add', Article)
+        rules.allow('view', Article)
+        rules.allow('change', Article)
+        rules.allow('delete', Article)
 ```
 
-3. Configure `cancan` by adding `CANCAN` section in `settings.py`:
+3.  In `settings.py` add `CANCAN` section, so that `cancan` library will know where to search for `define_access_rules` function from the previous step:
 
 ```python
 CANCAN = {
-    'ABILITIES': 'myapp.abilities.declare_abilities'
+    'ABILITIES': 'myapp.abilities.define_access_rules'
 }
 ```
 
-Next, add `cancan` middleware after `AuthenticationMiddleware`:
+The `define_access_rules` function will be executed automatically per each request by the `cancan` middleware. The middleware will call the function to determine the abilities of a current user.
+
+Let's add `cancan` middleware, just after `AuthenticationMiddleware`:
 
 ```python
 MIDDLEWARE = [
@@ -79,10 +90,13 @@ MIDDLEWARE = [
 ]
 ```
 
-Adding the middleware adds `request.ability` instance which you can use
-to check for: model permissions, object permissions and model querysets.
+By adding the middleware you will also get an access to `request.ability` instance which you can use
+to: 
+ - check model permissions, 
+ - check object permissions,
+ - generate model querysets (i.e. in case of `ListView`s
 
-4. Check abilities in views:
+4. Check for abilities in views:
 
 ```python
 
@@ -90,7 +104,7 @@ class ArticleListView(ListView):
     model = Article
 
     def get_queryset():
-        # this is how you can retrieve all objects a user can access
+        # this is how you can retrieve all objects that current user can access
         qs = self.request.ability.queryset_for('view', Article)
         return qs
 
@@ -103,6 +117,101 @@ class ArticleDetailView(PermissionRequiredMixin, DetailView):
         # this is how you can check if user can access an object
         return self.request.ability.can('view', article)
 ```
+
+5. Check for abilities in templates
+
+You can also check for abilities in template files, i. e. to show/hide/disable buttons or links.
+
+First you need to add `cancan` processor to `context_processors` in `TEMPLATES` section of `settings.py`:
+
+```python
+TEMPLATES = [
+    {
+        ...,
+        "OPTIONS": {
+            "context_processors": [
+                ...,
+                "cancan.context_processors.abilities",
+            ],
+        },
+    },
+]
+```
+
+This will give you access to `ability` object in a template. You also need add `{% load cancan_tags %}` at the beginning 
+of the template file.
+
+Next you can check for object permissions:
+
+```
+{% if ability|can:"change"|subject:article %}
+    <a href="{% url 'article_edit' pk=article.id %}">Edit article</a>
+{% endif %}
+```
+
+or model permissions:
+
+```
+{% load cancan_tags %}
+
+...
+
+{% if ability|can:"add"|"myapp.Article" %}
+    <a href="{% url 'article_new' %}">Create new article</a>
+{% endif %}
+```
+
+You can also use `can` template tag to create a reusable variable:
+
+```
+{% can "add" "core.Project" as can_add_project %}
+...
+{% if can_add_project %}
+    ...
+{% endif %}
+```
+
+## Checking for abilities in Django Rest Framework
+
+Let's start by creating a pemission class:
+
+```python
+from rest_framework import permissions
+
+def set_aliases_for_drf_actions(ability):
+    """
+    map DRF actions to default Django permissions
+    """
+    ability.access_rules.set_alias("list", "view")
+    ability.access_rules.set_alias("retrieve", "view")
+    ability.access_rules.set_alias("create", "add")
+    ability.access_rules.set_alias("update", "change")
+    ability.access_rules.set_alias("partial_update", "change")
+    ability.access_rules.set_alias("destroy", "delete")
+
+
+class AbilityPermission(permissions.BasePermission):
+    def has_permission(self, request, view=None):
+        ability = request.ability
+        set_aliases_for_drf_actions(ability)
+        return ability.can(view.action, view.get_queryset().model)
+
+    def has_object_permission(self, request, view, obj):
+        ability = request.ability
+        set_aliases_for_drf_actions(ability)
+        return ability.can(view.action, obj)
+```
+
+Next, secure the ViewSet with `AbilityPermission` and override `get_queryset` method to list objects based on the access rights.
+
+```python
+class ArticleViewset(ModelViewSet):
+    permission_classes = [AbilityPermission]
+
+    def get_queryset(self):
+        return self.request.ability.queryset_for(self.action, Article).distinct()
+```
+
 
 ## Sponsors
 
