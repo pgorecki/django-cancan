@@ -265,6 +265,7 @@ will generate a query:
 SELECT "core_project"."id", "core_project"."name", "core_project"."description", "core_project"."created_by_id" FROM "core_project" WHERE ("core_project"."description" LIKE %Bar% ESCAPE '\' OR "core_project"."name" = Foo)
 ```
 
+See [example_project/cancan_playground.ipynb](example_project/cancan_playground.ipynb) for more examples.
 
 
 ## Sponsors

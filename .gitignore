@@ -3,6 +3,7 @@
 .pyc
 *.sqlite3
 *.db
+.ipynb_checkpoints/
 build/
 dist/
 django_cancan.egg-info/
