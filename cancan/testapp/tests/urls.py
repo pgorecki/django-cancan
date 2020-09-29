@@ -13,7 +13,7 @@ admin.autodiscover()
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/login/', LoginView.as_view(template_name='blank.html')),
-    path('articles/', ArticleListView.as_view())
+    path("admin/", admin.site.urls),
+    path("accounts/login/", LoginView.as_view(template_name="blank.html")),
+    path("articles/", ArticleListView.as_view()),
 ]

@@ -12,6 +12,8 @@ django-environ = "*"
 setuptools = "*"
 wheel = "*"
 twine = "*"
+black = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.7"
@@ -19,3 +21,6 @@ python_version = "3.7"
 [scripts]
 build = "python setup.py sdist bdist_wheel"
 publish = "twine upload --skip-existing dist/*"
+
+[pipenv]
+allow_prereleases = true

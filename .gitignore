@@ -1,6 +1,8 @@
 .vscode/
 .pytest_cache/
 .pyc
+*.sqlite3
+*.db
 build/
 dist/
 django_cancan.egg-info/

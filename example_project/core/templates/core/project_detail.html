@@ -1,0 +1,20 @@
+{% extends 'bulma/base.html' %}
+{% load cancan_tags %}
+
+{% block title %}{{object.name}}{% endblock %} 
+
+{% block content %}
+<h1 class="is-size-1">{{object.name}}</h1>
+<p>{{object.description}}</p>
+<br />
+
+<a href="{% url 'project_list' %}" class="button is-primary">Back</a>
+
+{% if ability|can:"change"|subject:object %}
+    <a href="{% url 'project_edit' pk=object.id %}" class="button">Edit</a>
+{% endif %}
+{% if ability|can:"delete"|subject:object %}
+    <a href="#" class="button is-danger">Delete</a>
+{% endif %}
+
+{% endblock content %}
