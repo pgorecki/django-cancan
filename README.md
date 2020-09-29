@@ -94,7 +94,7 @@ By adding the middleware you will also get an access to `request.ability` instan
 to: 
  - check model permissions, 
  - check object permissions,
- - generate model querysets (i.e. in case of `ListView`s
+ - generate model querysets (i.e. when inheriting from `ListView`)
 
 4. Check for abilities in views:
 
@@ -144,6 +144,10 @@ of the template file.
 Next you can check for object permissions:
 
 ```
+{% load cancan_tags %}
+
+...
+
 {% if ability|can:"change"|subject:article %}
     <a href="{% url 'article_edit' pk=article.id %}">Edit article</a>
 {% endif %}
@@ -152,10 +156,6 @@ Next you can check for object permissions:
 or model permissions:
 
 ```
-{% load cancan_tags %}
-
-...
-
 {% if ability|can:"add"|"myapp.Article" %}
     <a href="{% url 'article_new' %}">Create new article</a>
 {% endif %}
