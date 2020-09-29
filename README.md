@@ -54,6 +54,7 @@ def define_access_rules(user, rules):
         return 
 
     # Allow logged in user to view his own articles, regardless of the `published` status
+    # allow accepts the same kwargs that you would provide to QuerySet.filter method
     rules.allow('view', Article, author=user)
 
     if user.has_perm('article.view_unpublished'):
@@ -211,6 +212,59 @@ class ArticleViewset(ModelViewSet):
     def get_queryset(self):
         return self.request.ability.queryset_for(self.action, Article).distinct()
 ```
+
+## `ability.queryset_for` and `rules.allow` explained
+
+When executing `rules.allow` you specify 2 positional arguments: `action` and `subject`. Any additional parameters passed to allow will filter
+the results in the same way as for Django `QuerySet.fiter` method.
+
+Let's say that we have the following models in `core.models.py`:
+
+```python
+class Project(models.Model):
+    name = models.CharField(max_length=128)
+    description = models.TextField(default="", blank=True)
+    members = models.ManyToManyField(User, through="Membership")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
+
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+```
+
+If you have the following rules:
+```
+rules.allow('view', Project, name="Foo")
+```
+
+then executing:
+```
+ability.queryset_for('view', Project)
+```
+
+will result in the following query:
+```
+SELECT "core_project"."id", "core_project"."name", "core_project"."description", "core_project"."created_by_id" FROM "core_project" WHERE "core_project"."name" = Foo
+```
+
+Similarly, `rules.allow('view', Project, name="Foo", description__contains="Bar")`
+
+will generate a query:
+```
+SELECT "core_project"."id", "core_project"."name", "core_project"."description", "core_project"."created_by_id" FROM "core_project" WHERE ("core_project"."description" LIKE %Bar% ESCAPE '\' AND "core_project"."name" = Foo)
+```
+
+Multiple rules for the same action and model will result in OR'ed queries, i.e.:
+```
+rules.allow('view', Project, name="Foo")
+rules.allow('view', Project, description__contains="Bar")
+```
+
+will generate a query:
+```
+SELECT "core_project"."id", "core_project"."name", "core_project"."description", "core_project"."created_by_id" FROM "core_project" WHERE ("core_project"."description" LIKE %Bar% ESCAPE '\' OR "core_project"."name" = Foo)
+```
+
 
 
 ## Sponsors
