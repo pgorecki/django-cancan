@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="django-cancan",
-    version="0.4",
+    version="0.4.1",
     author="Przemysław Górecki",
     author_email="przemyslaw.gorecki@gmail.com",
     description="Authorization library for Django",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/pgorecki/django-cancan",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Django",
         "Framework :: Django :: 2.2",
