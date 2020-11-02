@@ -183,12 +183,12 @@ def set_aliases_for_drf_actions(ability):
     """
     map DRF actions to default Django permissions
     """
-    ability.access_rules.set_alias("list", "view")
-    ability.access_rules.set_alias("retrieve", "view")
-    ability.access_rules.set_alias("create", "add")
-    ability.access_rules.set_alias("update", "change")
-    ability.access_rules.set_alias("partial_update", "change")
-    ability.access_rules.set_alias("destroy", "delete")
+    ability.access_rules.alias_action("list", "view")
+    ability.access_rules.alias_action("retrieve", "view")
+    ability.access_rules.alias_action("create", "add")
+    ability.access_rules.alias_action("update", "change")
+    ability.access_rules.alias_action("partial_update", "change")
+    ability.access_rules.alias_action("destroy", "delete")
 
 
 class AbilityPermission(permissions.BasePermission):
