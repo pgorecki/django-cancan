@@ -62,7 +62,7 @@ class Ability:
         else:
             return self.validate_instance(action, subject)
 
-    def queryset_for(self, action, model):
+    def queryset_for(self, action, model, distinct=True):
         model = normalize_subject(model)
         action = self.access_rules.alias_to_action(action)
 
@@ -87,6 +87,9 @@ class Ability:
         can_query_set = query_sets.pop()
         for qs in query_sets:
             can_query_set |= qs
+
+        if distinct:
+            can_query_set = can_query_set.distinct()
 
         return can_query_set
 
