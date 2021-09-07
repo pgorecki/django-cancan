@@ -157,7 +157,7 @@ Next you can check for object permissions:
 or model permissions:
 
 ```
-{% if ability|can:"add"|"myapp.Article" %}
+{% if ability|can:"add"|subject:"myapp.Article" %}
     <a href="{% url 'article_new' %}">Create new article</a>
 {% endif %}
 ```
