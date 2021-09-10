@@ -213,6 +213,26 @@ class ArticleViewset(ModelViewSet):
         return self.request.ability.queryset_for(self.action, Article).distinct()
 ```
 
+## Unit testing
+
+This is how you can unit test your `define_access_rules` function.
+
+```python
+from cancan.access_rules import AccessRules
+from cancan.ability import Ability
+from myapp.abilities import define_access_rules
+
+user = somehow_create_user(...)
+instance1 = MyModel.objects.create(...)
+
+access_rules = AccessRules(user)
+define_access_rules(user1, access_rules)
+ability = Ability(access_rules)
+
+assert instance1 in ability.queryset_for("view", MyModel)
+assert ability.can("update", instance1)
+```
+
 ## `ability.queryset_for` and `rules.allow` explained
 
 When executing `rules.allow` you specify 2 positional arguments: `action` and `subject`. Any additional parameters passed to allow will filter
