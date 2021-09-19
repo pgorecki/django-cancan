@@ -213,6 +213,58 @@ class ArticleViewset(ModelViewSet):
         return self.request.ability.queryset_for(self.action, Article).distinct()
 ```
 
+## Itegrating with admin panel
+
+To inegrate `django-cancan` with the admin panel, add the following mixin to your `admin.ModelAdmin` class.
+
+```
+class AbilityModelAdminMixin:
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        return request.ability.queryset_for("view", self.model)
+
+    def has_module_permission(self, request):
+        if request.user.is_superuser:
+            return True
+
+        can = request.ability.can
+        return (
+                can("view", self.model)
+                or can("change", self.model)
+                or can("delete", self.model)
+        )
+
+    def has_add_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        return request.ability.can("add", self.model)
+
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        return request.ability.can("view", self.model)
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        return request.ability.can("change", self.model)
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        return request.ability.can("delete", self.model)
+```
+
+like so:
+
+```
+class AbilityModelAdmin(AbilityModelAdminMixin, admin.ModelAdmin):
+    pass
+    
+admin.site.register(Article, AbilityModelAdmin)
+```
+
 ## Unit testing
 
 This is how you can unit test your `define_access_rules` function.
