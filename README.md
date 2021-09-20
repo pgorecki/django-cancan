@@ -104,7 +104,7 @@ to:
 class ArticleListView(ListView):
     model = Article
 
-    def get_queryset():
+    def get_queryset(self):
         # this is how you can retrieve all objects that current user can access
         qs = self.request.ability.queryset_for('view', Article)
         return qs
