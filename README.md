@@ -342,6 +342,11 @@ See [example_project/cancan_playground.ipynb](example_project/cancan_playground.
 
 ## Sponsors
 
+
+<a href="https://www.stxnext.com/" target="_blank">
+  <img src="https://4542168.fs1.hubspotusercontent-na1.net/hubfs/4542168/STXNext_logo_GreenGradient@3x%201.png" alt="STX Next" />
+</a>
+<br>
 <a href="https://ermlab.com/" target="_blank">
   <img src="https://ermlab.com/wp-content/uploads/2019/08/ermlab_logo_plain_h80.png" alt="Ermlab" width="200"/>
 </a>
